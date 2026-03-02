@@ -48,7 +48,7 @@ This project was designed as a teaching-quality implementation that emphasizes s
 - position-aware lexical, parse, and evaluation errors
 - REPL loop that continues safely after errors
 
-**Primary learning objective:** demonstrate engineering rigor, not just get the math result.
+**Primary learning objective:** demonstrate engineering rigor.
 
 ---
 
@@ -342,11 +342,6 @@ These limits keep core design and correctness visible and teachable.
 
 ## License
 
-Choose one and add it to your repository:
-- MIT License 
-- Apache-2.0 (explicit patent grant)
-
-Example:
 `This project is licensed under the MIT License - see LICENSE file for details.`
 
 ---
