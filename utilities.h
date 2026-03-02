@@ -5,7 +5,7 @@
 #include <string>
 
 namespace expr {
-
+// error helper struct throughout the project
 struct Status {
     bool ok;
     std::string message;
