@@ -8,7 +8,7 @@
 #include "utilities.h"
 
 namespace expr {
-
+// for safty and clarity it is better to use class TokenType other than just enum
 enum class TokenType {
     Number,
     Plus,
