@@ -17,6 +17,7 @@ enum class TokenType {
     Slash,
     LParen,
     RParen,
+    max,
     End
 };
 
