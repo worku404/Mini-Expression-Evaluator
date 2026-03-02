@@ -3,3 +3,54 @@
 AGENTS.md
 .github
 .vscode
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Linker files
+*.ilk
+
+# Debugger Files
+*.pdb
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# debug information files
+*.dwo
+
+
+.vs/
+.vscode/
+AGENTS.md
+Chapter 5 - Modular Programming.pdf
+Chapter 7 (Part I) - User Defined Datatypes.pdf
+Chapter 7 (Part II) - User Defined Datatypes.pdf
+Chapter 8 - File Management.pdf
+Chapter 9 - The C++ Standard Template Library (STL).pdf
