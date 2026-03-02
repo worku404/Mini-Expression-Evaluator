@@ -353,5 +353,3 @@ Software Engineering Student | C++ Developer
 - GitHub: `https://github.com/worku404`
 - LinkedIn: `https://linkedin.com/in/`
 - Email: `accworku@gmail.com`
-
-Tip: replace placeholders before publishing so the README is portfolio-ready.
