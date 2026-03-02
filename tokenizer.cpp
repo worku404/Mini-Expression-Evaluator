@@ -23,6 +23,7 @@ void skip_whitespace(const std::string& expression, std::size_t& index) {
 
 Status scan_number(const std::string& expression, std::size_t& index, std::vector<Token>& tokens) {
     const std::size_t start = index;
+    // accumulate
     long long value = 0;
 
     while (index < expression.size() && is_digit(expression[index])) {
