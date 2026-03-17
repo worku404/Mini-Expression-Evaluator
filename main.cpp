@@ -1,8 +1,9 @@
+#include "controller.h"
 #include <iostream>
 
-#include "controller.h"
-
 int main() {
-    expr::repl(std::cin, std::cout);
+    std::cout << "Simple Calculator\n";
+    std::cout << "> ";
+    repl(std::cin, std::cout);
     return 0;
 }
