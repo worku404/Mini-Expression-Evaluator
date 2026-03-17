@@ -5,13 +5,11 @@
 #include <string>
 
 #include "utilities.h"
-
-namespace expr {
-
+#include <iosfwd>
+#include <string>
 Status run_once(const std::string& line, std::ostream& out);
 
 void repl(std::istream& in, std::ostream& out);
 
-}  // namespace expr
 
 #endif  // EXPRESSION_EVALUATOR_CONTROLLER_H
