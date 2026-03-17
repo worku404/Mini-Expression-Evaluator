@@ -7,7 +7,6 @@
 // function prototype for tokenizer file
 #include "utilities.h"
 
-namespace expr {
 // for safty and clarity it is better to use class TokenType other than just enum
 enum class TokenType {
     Number,
@@ -34,6 +33,5 @@ struct TokenizeResult {
 
 TokenizeResult tokenize(const std::string& expression);
 
-}  // namespace expr
 
 #endif  // EXPRESSION_EVALUATOR_TOKENIZER_H
