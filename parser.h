@@ -1,24 +1,54 @@
 #ifndef EXPRESSION_EVALUATOR_PARSER_H
 #define EXPRESSION_EVALUATOR_PARSER_H
 
+#include "tokenizer.h"
+#include <cstddef>
+#include <memory>
+#include "utilities.h"
 #include <vector>
 
-#include "tokenizer.h"
-#include "utilities.h"
+enum class AstNodeType {
+    Number,
+    Unary,
+    Binary
+};
 
-namespace expr {
+enum class UnaryOperator {
+    Negate
+};
 
+enum class BinaryOperator {
+    Add,
+    Subtract,
+    Multiply,
+    Divide
+};
+
+// Base class
 struct AstNode {
-    int placeholder;
+    virtual ~AstNode() = default;
+    AstNodeType type;
+    std::size_t position;
+};
+
+struct NumberNode : AstNode {
+    long long value;
+};
+
+struct UnaryNode : AstNode {
+    UnaryOperator op;
+    std::unique_ptr<AstNode> operand;
+};
+
+struct BinaryNode : AstNode {
+    BinaryOperator op;
+    std::unique_ptr<AstNode> left;
+    std::unique_ptr<AstNode> right;
 };
 
 struct ParseResult {
-    AstNode* root;
+    std::unique_ptr<AstNode> root;
     Status status;
 };
 
 ParseResult parse(const std::vector<Token>& tokens);
-
-}  // namespace expr
-
-#endif  // EXPRESSION_EVALUATOR_PARSER_H
