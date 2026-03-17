@@ -4,7 +4,6 @@
 #include "parser.h"
 #include "utilities.h"
 
-namespace expr {
 
 struct EvalResult {
     long long value;
@@ -13,6 +12,5 @@ struct EvalResult {
 
 EvalResult evaluate(const AstNode& root);
 
-}  // namespace expr
 
 #endif  // EXPRESSION_EVALUATOR_EVALUATOR_H
