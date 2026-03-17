@@ -1,103 +1,108 @@
 #include "tokenizer.h"
-
 #include <cctype>
 #include <limits>
 
-namespace expr {
-
 namespace {
-
-bool is_space(char ch) {
-    return std::isspace(static_cast<unsigned char>(ch)) != 0;
-}
-
-bool is_digit(char ch) {
-    return std::isdigit(static_cast<unsigned char>(ch)) != 0;
-}
-
-void skip_whitespace(const std::string& expression, std::size_t& index) {
-    while (index < expression.size() && is_space(expression[index])) {
-        ++index;
+    void skip_whitespace(const std::string& expression, std::size_t& index) {
+        while (index < expression.size() &&
+            std::isspace(static_cast<unsigned char>(expression[index])))
+        {
+            ++index;
+        }
     }
-}
 
-Status scan_number(const std::string& expression, std::size_t& index, std::vector<Token>& tokens) {
-    const std::size_t start = index;
-    // accumulate
-    long long value = 0;
-
-    while (index < expression.size() && is_digit(expression[index])) {
-        const int digit = expression[index] - '0';
-        const long long max_before_mul = std::numeric_limits<long long>::max() / 10;
-        const long long max_last_digit = std::numeric_limits<long long>::max() % 10;
-
-        if (value > max_before_mul || (value == max_before_mul && digit > max_last_digit)) {
-            return make_error("Integer literal overflow", start);
+    Status scan_number(const std::string& expression, std::size_t& index, Token& out_token) {
+        if (index >= expression.size() ||
+            !std::isdigit(static_cast<unsigned char>(expression[index]))) {
+            return make_error("Expected digit at start of number ", index);
         }
 
-        value = value * 10 + digit;
-        ++index;
+        const std::size_t start = index;
+        long long value = 0;
+
+        while (index < expression.size() &&
+            std::isdigit(static_cast<unsigned char>(expression[index]))) {
+            const int digit = expression[index] - '0';
+
+            if (value > (std::numeric_limits<long long>::max() - digit) / 10)
+                return make_error("Integer literal out of range ", start);
+
+            value = value * 10 + digit;
+            ++index;
+        }
+
+        out_token = Token{ value, TokenType::Number, start };
+        return make_ok();
     }
-
-    tokens.push_back({TokenType::Number, value, start});
-    return make_ok();
 }
-
-}  // namespace
 
 TokenizeResult tokenize(const std::string& expression) {
     TokenizeResult result;
-    result.status = make_ok();
-
     std::size_t index = 0;
+
     while (index < expression.size()) {
         skip_whitespace(expression, index);
         if (index >= expression.size()) {
             break;
         }
 
-        const char current = expression[index];
-        if (is_digit(current)) {
-            result.status = scan_number(expression, index, result.tokens);
-            if (!is_ok(result.status)) {
+        const std::size_t position = index;
+        const char ch = expression[index];
+
+        if (std::isdigit(static_cast<unsigned char>(ch))) {
+            if (!result.tokens.empty() &&
+                result.tokens.back().type == TokenType::Number) {
+                result.tokens.clear();
+                result.status = make_error("Missing operator between numbers ", position);
                 return result;
             }
+
+            Token number_token;
+            Status status = scan_number(expression, index, number_token);
+
+            if (!is_ok(status)) {
+                result.tokens.clear();
+                result.status = status;
+                return result;
+            }
+
+            result.tokens.push_back(number_token);
             continue;
         }
 
-        switch (current) {
-            case '+':
-                result.tokens.push_back({TokenType::Plus, 0, index});
-                ++index;
-                break;
-            case '-':
-                result.tokens.push_back({TokenType::Minus, 0, index});
-                ++index;
-                break;
-            case '*':
-                result.tokens.push_back({TokenType::Star, 0, index});
-                ++index;
-                break;
-            case '/':
-                result.tokens.push_back({TokenType::Slash, 0, index});
-                ++index;
-                break;
-            case '(':
-                result.tokens.push_back({TokenType::LParen, 0, index});
-                ++index;
-                break;
-            case ')':
-                result.tokens.push_back({TokenType::RParen, 0, index});
-                ++index;
-                break;
-            default:
-                result.status = make_error("Invalid character in expression", index);
-                return result;
+        switch (ch) {
+        case '+':
+            result.tokens.push_back(Token{ 0, TokenType::Plus, position });
+            ++index;
+            break;
+        case '-':
+            result.tokens.push_back(Token{ 0, TokenType::Minus, index });
+            ++index;
+            break;
+        case '*':
+            result.tokens.push_back(Token{ 0, TokenType::Star, index });
+            ++index;
+            break;
+        case '/':
+            result.tokens.push_back(Token{ 0, TokenType::Slash, index });
+            ++index;
+            break;
+        case '(':
+            result.tokens.push_back(Token{ 0, TokenType::LParen, index });
+            ++index;
+            break;
+        case ')':
+            result.tokens.push_back(Token{ 0, TokenType::RParen, index });
+            ++index;
+            break;
+        default:
+            result.tokens.clear();
+            result.status = make_error("Unexpected character", position);
+            return result;
+
         }
     }
-
-    result.tokens.push_back({TokenType::End, 0, expression.size()});
+    result.tokens.push_back(Token{ 0, TokenType::End, expression.size() });
+    result.status = make_ok();
     return result;
 }
-
-}  // namespace expr
